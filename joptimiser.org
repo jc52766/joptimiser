@@ -170,4 +170,4 @@ xp - +/"2 xt
 
 *** Conclusion
 
-Using only array data stuctures and solving multiple times solves our problem whilst keeping things simple.
+Problem solved. Simples :)
