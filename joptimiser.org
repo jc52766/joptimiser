@@ -1,0 +1,192 @@
+#+title: Joptimiser
+#+options: \n:t
+
+# J Optimiser
+
+Main motivation for what is written below is to keep things extremely simple whilst also solving the problem.
+
+Below is an overview of the simplest optimiser I could come up with to solve the most common optimisation problems I face:
+- Given a range of options
+- Given a non-trivial problem to solve
+- Which options to choose? And how many of each option to chooses?
+
+Below uses a simple toy example to illustrate the usefulness of the proposed algorithm.
+But in doing so I hope you can gain an intuition for this approach solving more complicated problems.
+
+*** Options (xo)
+#+begin_src J :session :results value :exports both
+]<xo=:(3 3) $ 2 0 0 1 1 0 1 0 1
+#+end_src
+
+#+RESULTS:
+: ┌─────┐
+: │2 0 0│
+: │1 1 0│
+: │1 0 1│
+: └─────┘
+
+Think of each row as a unique option and each column as a category or grouping 1:n. First option means you can have 2 units of A, option 2 means 1 unit of A and B and option 3 is 1 unit of options A and C.
+
+If it helps you may prefer to think of each row as:
+- what can fit onto a single pallet;
+- What a staff member can shelve within a time period; or
+- Ways to breakdown a single beef, pork or lamb carcase to fill demand for different products.
+Whatever works for you really.
+
+*** Problem (xp)
+Next up is our problem to solve for: xp.
+In many cases this can be more vague but here we assume to know how many units of each of A,B and C we are to solve for.
+
+#+begin_src J :session :results value :exports both
+]xp=:4 2 2
+#+end_src
+
+#+RESULTS:
+: 4 2 2
+
+It does not matter so much the exact problem to solve for most important is that xo can map to xp.
+In this case rows of xo can be chosen and stacked up, with their column sums solving for each atom of xp.
+
+*** Starting point (xt)
+We need a starting point. Which can be either uninformative or informative.
+There is a strong case to start with some random selection of choices but in this example we opt for the uninformative approach: A frame of zero's to store our solution.
+
+#+begin_src J :session :results value :exports both
+]<xt0=:(4,3) $ 0 NB. start with all zeros
+xt=:xt0
+#+end_src
+
+#+RESULTS:
+: ┌─────┐
+: │0 0 0│
+: │0 0 0│
+: │0 0 0│
+: │0 0 0│
+: └─────┘
+
+*** Weights (wdf & wde)
+Now come our weights. They do not need to be different but to keep this interesting and realistic we will do so here.
+
+#+begin_src J :session :results value :exports both
+]<wdf=:10 1 1 NB. demand fill weights
+]<wde=:_10 _0.5 _0.5 NB. demand exceeded weights
+#+end_src
+
+#+RESULTS:
+: ┌──────┐
+: │10 1 1│
+: └──────┘
+:
+: ┌─────────────┐
+: │_10 _0.5 _0.5│
+: └─────────────┘
+
+wdf = weight (to multiply) for each unit of demand filled. With each positive but with option A being +10 compare with +1 for the other 2 options, making option A very attractive.
+
+wde = weight (to multiply) each unit of demand exceeded. Which are all negative but with option A being -10 compared with -1 for the other 2 options, making option A very unattractive to over-produce.
+
+Meaning option A is very attractive from a demand fill perspective but we want to be careful not to overshoot demand as that costs us a lot.
+
+After a little time one case hopefully see the optimal solve being to meet demand for each option exactly given that we are aiming to MAXIMISE (not MINIMISE).
+
+*** Evaluation
+
+We need a way to evaluate between candidate choices.
+The idea being to keep solving until we have met either the best solution or tried enough times to (hopefully) get really close.
+
+#+begin_src J :session :results value :exports both
+eval=:3 : 0
+csy=.+/"2 y
+df=. xp <. csy
+de=.0 >. csy-df
++/ (de*wde), (df*wdf)
+)
+eval (4,3) $ 1 1 0 1 1 0 0 0 0 0 0 0
+#+end_src
+
+#+RESULTS:
+: 22
+
+Eval above is a function that sums each column of its y argument. Then any demand-filled/excess it multiplies by wdf/wde and sums that.
+In the test case above 2,2,0 units (respectively) we filled for option A,B and C respectively leading to no excess so 2*20+2*1=22 being the evaluation metric.
+
+*** Find best solve (xb)
+
+#+begin_src J :session :results value :exports both
+bs=:3 : '(}:xt) ,~ xo{~ (] i. >./) {{eval y, }: xt}}"1 xo' NB. best solve finder
+solver=: 3 : 0
+xt=:bs 1
+eval xt
+)
+solver 1
+xt
+#+end_src
+
+#+RESULTS:
+: 20
+:
+: 2 0 0
+: 0 0 0
+: 0 0 0
+: 0 0 0
+
+No surprise here the above prefer option A because each unit makes 10 instead of 1, which is the case for options B and C.
+
+*** Continuous improvement
+
+This is the beauty of this solution. We keep it dead simple and greedy but also allow it to find the optimal, or at least a near-optimal, solve.
+
+How? Well we solve it once then try and improve on our previous solve again and again by updating our starting point each time to be the previous solve.
+Illustrated below:
+
+
+#+begin_src J :session :results value :exports both
+xt=:xt0
+solver"0 i.4
+<xt
+xp - +/"2 xt
+#+end_src
+
+#+RESULTS:
+#+begin_example
+20 40 31 22
+
+┌─────┐
+│1 1 0│
+│1 1 0│
+│2 0 0│
+│2 0 0│
+└─────┘
+
+_2 0 2
+#+end_example
+
+We can see the 1st try it evals at 22 with 2 units excess and 2 kg under demand.
+
+#+begin_src J :session :results value :exports both
+NB. second try:
+solver"0 i.4
+<xt
+xp - +/"2 xt
+#+end_src
+
+#+RESULTS:
+#+begin_example
+33 44 44 44
+
+┌─────┐
+│1 1 0│
+│1 1 0│
+│1 0 1│
+│1 0 1│
+└─────┘
+
+0 0 0
+#+end_example
+
+2nd attempt it evals at 44 (which is 2x the first try) whilst meeting demand exactly, no units produced exceed or under-supply demand for any category.
+
+*** Conclusion
+
+Although extremely simple this approach improves on many more complicated approaches which attempt to solve in a single pass.
+The appeal of this method is that it is dead simple, a kindergarten kid could understand it. Whilst being a powerful method to solve for real-world product demand fill problems.
