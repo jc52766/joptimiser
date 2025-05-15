@@ -59,7 +59,7 @@ xt=:xt0
 : └─────┘
 
 *** Weights (wdf & wde)
-Now come weights. They do not need to be different but to keep this interesting and realistic we will apply different weights.
+Here different weights will be applied to each product.
 
 #+begin_src J :session :results value :exports both
 ]<wdf=:10 1 1 NB. demand fill weights
@@ -90,7 +90,7 @@ df=. xp <. csy
 de=.0 >. csy-df
 +/ (de*wde), (df*wdf)
 )
-eval (4,3) $ 1 1 0 1 1 0 0 0 0 0 0 0
+eval (4,3) $ 1 1 0 1 1 0 ,6#0
 #+end_src
 
 #+RESULTS:
@@ -143,7 +143,7 @@ xp - +/"2 xt
 _2 0 2
 #+end_example
 
-We can see the 1st try it evals at 22 with 2 units excess and 2 kg under demand.
+1st try eval = 22 with 2 units excess and 2 kg under demand.
 
 #+begin_src J :session :results value :exports both
 NB. second try:
@@ -166,7 +166,7 @@ xp - +/"2 xt
 0 0 0
 #+end_example
 
-2nd attempt it evals at 44 (which is 2x the first try) whilst meeting demand exactly, no units produced exceed or under-supply demand for any category.
+2nd attempt eval = 44 and whilst meeting demand exactly, no units produced exceed or under-supply demand for any category.
 
 *** Conclusion
 
