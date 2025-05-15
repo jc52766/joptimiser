@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-05-15 Thu 22:28 -->
+<!-- 2025-05-15 Thu 22:43 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Joptimiser</title>
@@ -201,14 +201,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org9b0eb55">1. Options (xo)</a></li>
-<li><a href="#orgda533d3">2. Problem (xp)</a></li>
-<li><a href="#org6ac3bd9">3. Starting point (xt)</a></li>
-<li><a href="#orgbe9f2c0">4. Weights (wdf &amp; wde)</a></li>
-<li><a href="#orgf8fa724">5. Evaluation</a></li>
-<li><a href="#org6fe8216">6. Find best solve (xb)</a></li>
-<li><a href="#org9cf4089">7. Continuous improvement</a></li>
-<li><a href="#org5cc7cb9">8. Conclusion</a></li>
+<li><a href="#org22fe903">1. Options (xo)</a></li>
+<li><a href="#orgd249798">2. Problem (xp)</a></li>
+<li><a href="#orga5ffe1b">3. Starting point (xt)</a></li>
+<li><a href="#org4e9b664">4. Weights (wdf &amp; wde)</a></li>
+<li><a href="#org281e62f">5. Evaluation</a></li>
+<li><a href="#org2ed949a">6. Find best solve (xb)</a></li>
+<li><a href="#org60b690a">7. Continuous improvement</a></li>
+<li><a href="#org58a66fa">8. Conclusion</a></li>
 </ul>
 </div>
 </div>
@@ -217,7 +217,7 @@ Main motivation for what is written below is to keep things extremely simple whi
 </p>
 
 <p>
-Below is an overview of the simplest optimiser I could come up with to solve the most common optimisation problems I face:<br />
+The simplest optimiser I could come up with to solve the most common optimisation problems I face:<br />
 </p>
 <ul class="org-ul">
 <li>Given a range of options<br /></li>
@@ -226,11 +226,11 @@ Below is an overview of the simplest optimiser I could come up with to solve the
 </ul>
 
 <p>
-Below uses a simple toy example to illustrate the usefulness of the proposed algorithm.<br />
+Below uses a simple example to illustrate the usefulness of the proposed algorithm.<br />
 But in doing so I hope you can gain an intuition for this approach solving more complicated problems.<br />
 </p>
-<div id="outline-container-org9b0eb55" class="outline-2">
-<h2 id="org9b0eb55"><span class="section-number-2">1.</span> Options (xo)</h2>
+<div id="outline-container-org22fe903" class="outline-2">
+<h2 id="org22fe903"><span class="section-number-2">1.</span> Options (xo)</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-J">]&lt;xo=:(3 3) $ 2 0 0 1 1 0 1 0 1
@@ -247,28 +247,15 @@ But in doing so I hope you can gain an intuition for this approach solving more 
 
 
 <p>
-Think of each row as a unique option and each column as a category or grouping 1:n. First option means you can have 2 units of A, option 2 means 1 unit of A and B and option 3 is 1 unit of options A and C.<br />
-</p>
-
-<p>
-If it helps you may prefer to think of each row as:<br />
-</p>
-<ul class="org-ul">
-<li>what can fit onto a single pallet;<br /></li>
-<li>What a staff member can shelve within a time period; or<br /></li>
-<li>Ways to breakdown a single beef, pork or lamb carcase to fill demand for different products.<br /></li>
-</ul>
-<p>
-Whatever works for you really.<br />
+Each row is a unique option and each column a distinct product category e.g. snacks or mince 90cl for example. The first option means you can have 2 units of A, option 2 means 1 unit of A and B and option 3 is 1 unit of options A and C.<br />
 </p>
 </div>
 </div>
-<div id="outline-container-orgda533d3" class="outline-2">
-<h2 id="orgda533d3"><span class="section-number-2">2.</span> Problem (xp)</h2>
+<div id="outline-container-orgd249798" class="outline-2">
+<h2 id="orgd249798"><span class="section-number-2">2.</span> Problem (xp)</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-Next up is our problem to solve for: xp.<br />
-In many cases this can be more vague but here we assume to know how many units of each of A,B and C we are to solve for.<br />
+Here we assume to know how many units of each of A,B and C we are to solve for: xp.<br />
 </p>
 
 <div class="org-src-container">
@@ -282,17 +269,17 @@ In many cases this can be more vague but here we assume to know how many units o
 
 
 <p>
-It does not matter so much the exact problem to solve for most important is that xo can map to xp.<br />
+Most important is that xo can map to xp.<br />
 In this case rows of xo can be chosen and stacked up, with their column sums solving for each atom of xp.<br />
 </p>
 </div>
 </div>
-<div id="outline-container-org6ac3bd9" class="outline-2">
-<h2 id="org6ac3bd9"><span class="section-number-2">3.</span> Starting point (xt)</h2>
+<div id="outline-container-orga5ffe1b" class="outline-2">
+<h2 id="orga5ffe1b"><span class="section-number-2">3.</span> Starting point (xt)</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 We need a starting point. Which can be either uninformative or informative.<br />
-There is a strong case to start with some random selection of choices but in this example we opt for the uninformative approach: A frame of zero&rsquo;s to store our solution.<br />
+In this example we opt for the uninformative approach: A frame of zero&rsquo;s to store our solution.<br />
 </p>
 
 <div class="org-src-container">
@@ -311,11 +298,11 @@ xt=:xt0
 </pre>
 </div>
 </div>
-<div id="outline-container-orgbe9f2c0" class="outline-2">
-<h2 id="orgbe9f2c0"><span class="section-number-2">4.</span> Weights (wdf &amp; wde)</h2>
+<div id="outline-container-org4e9b664" class="outline-2">
+<h2 id="org4e9b664"><span class="section-number-2">4.</span> Weights (wdf &amp; wde)</h2>
 <div class="outline-text-2" id="text-4">
 <p>
-Now come our weights. They do not need to be different but to keep this interesting and realistic we will do so here.<br />
+Now come weights. They do not need to be different but to keep this interesting and realistic we will apply different weights.<br />
 </p>
 
 <div class="org-src-container">
@@ -336,28 +323,19 @@ Now come our weights. They do not need to be different but to keep this interest
 
 
 <p>
-wdf = weight (to multiply) for each unit of demand filled. With each positive but with option A being +10 compare with +1 for the other 2 options, making option A very attractive.<br />
+wdf = weight (to multiply) for each unit of demand filled. Product group A wdf being +10 compare with +1 for the other 2 options, making option A very attractive.<br />
 </p>
 
 <p>
-wde = weight (to multiply) each unit of demand exceeded. Which are all negative but with option A being -10 compared with -1 for the other 2 options, making option A very unattractive to over-produce.<br />
-</p>
-
-<p>
-Meaning option A is very attractive from a demand fill perspective but we want to be careful not to overshoot demand as that costs us a lot.<br />
-</p>
-
-<p>
-After a little time one case hopefully see the optimal solve being to meet demand for each option exactly given that we are aiming to MAXIMISE (not MINIMISE).<br />
+wde = weight (to multiply) each unit of demand exceeded. Product group A being -10 compared with -1 for the other 2 options, making option A very unattractive to over-produce.<br />
 </p>
 </div>
 </div>
-<div id="outline-container-orgf8fa724" class="outline-2">
-<h2 id="orgf8fa724"><span class="section-number-2">5.</span> Evaluation</h2>
+<div id="outline-container-org281e62f" class="outline-2">
+<h2 id="org281e62f"><span class="section-number-2">5.</span> Evaluation</h2>
 <div class="outline-text-2" id="text-5">
 <p>
-We need a way to evaluate between candidate choices.<br />
-The idea being to keep solving until we have met either the best solution or tried enough times to (hopefully) get really close.<br />
+We need a way to evaluate between candidate choices and each time pick the best candidate.<br />
 </p>
 
 <div class="org-src-container">
@@ -377,13 +355,12 @@ eval (4,3) $ 1 1 0 1 1 0 0 0 0 0 0 0
 
 
 <p>
-Eval above is a function that sums each column of its y argument. Then any demand-filled/excess it multiplies by wdf/wde and sums that.<br />
 In the test case above 2,2,0 units (respectively) we filled for option A,B and C respectively leading to no excess so 2*20+2*1=22 being the evaluation metric.<br />
 </p>
 </div>
 </div>
-<div id="outline-container-org6fe8216" class="outline-2">
-<h2 id="org6fe8216"><span class="section-number-2">6.</span> Find best solve (xb)</h2>
+<div id="outline-container-org2ed949a" class="outline-2">
+<h2 id="org2ed949a"><span class="section-number-2">6.</span> Find best solve (xb)</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-J">bs=:3 : '(}:xt) ,~ xo{~ (] i. &gt;./) {{eval y, }: xt}}"1 xo' NB. best solve finder
@@ -411,19 +388,9 @@ No surprise here the above prefer option A because each unit makes 10 instead of
 </p>
 </div>
 </div>
-<div id="outline-container-org9cf4089" class="outline-2">
-<h2 id="org9cf4089"><span class="section-number-2">7.</span> Continuous improvement</h2>
+<div id="outline-container-org60b690a" class="outline-2">
+<h2 id="org60b690a"><span class="section-number-2">7.</span> Continuous improvement</h2>
 <div class="outline-text-2" id="text-7">
-<p>
-This is the beauty of this solution. We keep it dead simple and greedy but also allow it to find the optimal, or at least a near-optimal, solve.<br />
-</p>
-
-<p>
-How? Well we solve it once then try and improve on our previous solve again and again by updating our starting point each time to be the previous solve.<br />
-Illustrated below:<br />
-</p>
-
-
 <div class="org-src-container">
 <pre class="src src-J">xt=:xt0
 solver"0 i.4
@@ -432,7 +399,7 @@ xp - +/"2 xt
 </pre>
 </div>
 
-<pre class="example" id="org189c9a8">
+<pre class="example" id="org485bfbc">
 20 40 31 22
 
 ┌─────┐
@@ -457,7 +424,7 @@ xp - +/"2 xt
 </pre>
 </div>
 
-<pre class="example" id="org8b5af1d">
+<pre class="example" id="org8253010">
 33 44 44 44
 
 ┌─────┐
@@ -475,19 +442,18 @@ xp - +/"2 xt
 </p>
 </div>
 </div>
-<div id="outline-container-org5cc7cb9" class="outline-2">
-<h2 id="org5cc7cb9"><span class="section-number-2">8.</span> Conclusion</h2>
+<div id="outline-container-org58a66fa" class="outline-2">
+<h2 id="org58a66fa"><span class="section-number-2">8.</span> Conclusion</h2>
 <div class="outline-text-2" id="text-8">
 <p>
-Although extremely simple this approach improves on many more complicated approaches which attempt to solve in a single pass.<br />
-The appeal of this method is that it is dead simple, a kindergarten kid could understand it. Whilst being a powerful method to solve for real-world product demand fill problems.<br />
+Using only array data stuctures and solving multiple times solves our problem whilst keeping things simple.<br />
 </p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Jason Corderoy</p>
-<p class="date">Created: 2025-05-15 Thu 22:28</p>
+<p class="date">Created: 2025-05-15 Thu 22:43</p>
 </div>
 </body>
 </html>
