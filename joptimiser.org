@@ -11,7 +11,7 @@ The simplest optimiser I could come up with to solve the most common optimisatio
 - Which options to choose? And how many of each option to chooses?
 
 Below uses a simple example to illustrate the usefulness of the proposed algorithm.
-But in doing so I hope you can gain an intuition for this approach solving more complicated problems.
+But in doing so I hope you can gain an intuition for the benefits of this approach in solving conceptually identical but less simple problems.
 
 *** Options (xo)
 #+begin_src J :session :results value :exports both

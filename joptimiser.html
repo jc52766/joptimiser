@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2025-05-15 Thu 22:43 -->
+<!-- 2025-05-15 Thu 22:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Joptimiser</title>
@@ -201,14 +201,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org22fe903">1. Options (xo)</a></li>
-<li><a href="#orgd249798">2. Problem (xp)</a></li>
-<li><a href="#orga5ffe1b">3. Starting point (xt)</a></li>
-<li><a href="#org4e9b664">4. Weights (wdf &amp; wde)</a></li>
-<li><a href="#org281e62f">5. Evaluation</a></li>
-<li><a href="#org2ed949a">6. Find best solve (xb)</a></li>
-<li><a href="#org60b690a">7. Continuous improvement</a></li>
-<li><a href="#org58a66fa">8. Conclusion</a></li>
+<li><a href="#org852f588">1. Options (xo)</a></li>
+<li><a href="#org363fd57">2. Problem (xp)</a></li>
+<li><a href="#orgf97d672">3. Starting point (xt)</a></li>
+<li><a href="#org9da37d1">4. Weights (wdf &amp; wde)</a></li>
+<li><a href="#org3b7a960">5. Evaluation</a></li>
+<li><a href="#org5975716">6. Find best solve (xb)</a></li>
+<li><a href="#org3c77563">7. Continuous improvement</a></li>
+<li><a href="#org4889adb">8. Conclusion</a></li>
 </ul>
 </div>
 </div>
@@ -227,10 +227,10 @@ The simplest optimiser I could come up with to solve the most common optimisatio
 
 <p>
 Below uses a simple example to illustrate the usefulness of the proposed algorithm.<br />
-But in doing so I hope you can gain an intuition for this approach solving more complicated problems.<br />
+But in doing so I hope you can gain an intuition for the benefits of this approach in solving conceptually identical but less simple problems.<br />
 </p>
-<div id="outline-container-org22fe903" class="outline-2">
-<h2 id="org22fe903"><span class="section-number-2">1.</span> Options (xo)</h2>
+<div id="outline-container-org852f588" class="outline-2">
+<h2 id="org852f588"><span class="section-number-2">1.</span> Options (xo)</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-J">]&lt;xo=:(3 3) $ 2 0 0 1 1 0 1 0 1
@@ -251,8 +251,8 @@ Each row is a unique option and each column a distinct product category e.g. sna
 </p>
 </div>
 </div>
-<div id="outline-container-orgd249798" class="outline-2">
-<h2 id="orgd249798"><span class="section-number-2">2.</span> Problem (xp)</h2>
+<div id="outline-container-org363fd57" class="outline-2">
+<h2 id="org363fd57"><span class="section-number-2">2.</span> Problem (xp)</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Here we assume to know how many units of each of A,B and C we are to solve for: xp.<br />
@@ -274,8 +274,8 @@ In this case rows of xo can be chosen and stacked up, with their column sums sol
 </p>
 </div>
 </div>
-<div id="outline-container-orga5ffe1b" class="outline-2">
-<h2 id="orga5ffe1b"><span class="section-number-2">3.</span> Starting point (xt)</h2>
+<div id="outline-container-orgf97d672" class="outline-2">
+<h2 id="orgf97d672"><span class="section-number-2">3.</span> Starting point (xt)</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 We need a starting point. Which can be either uninformative or informative.<br />
@@ -298,8 +298,8 @@ xt=:xt0
 </pre>
 </div>
 </div>
-<div id="outline-container-org4e9b664" class="outline-2">
-<h2 id="org4e9b664"><span class="section-number-2">4.</span> Weights (wdf &amp; wde)</h2>
+<div id="outline-container-org9da37d1" class="outline-2">
+<h2 id="org9da37d1"><span class="section-number-2">4.</span> Weights (wdf &amp; wde)</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Now come weights. They do not need to be different but to keep this interesting and realistic we will apply different weights.<br />
@@ -331,8 +331,8 @@ wde = weight (to multiply) each unit of demand exceeded. Product group A being -
 </p>
 </div>
 </div>
-<div id="outline-container-org281e62f" class="outline-2">
-<h2 id="org281e62f"><span class="section-number-2">5.</span> Evaluation</h2>
+<div id="outline-container-org3b7a960" class="outline-2">
+<h2 id="org3b7a960"><span class="section-number-2">5.</span> Evaluation</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 We need a way to evaluate between candidate choices and each time pick the best candidate.<br />
@@ -359,8 +359,8 @@ In the test case above 2,2,0 units (respectively) we filled for option A,B and C
 </p>
 </div>
 </div>
-<div id="outline-container-org2ed949a" class="outline-2">
-<h2 id="org2ed949a"><span class="section-number-2">6.</span> Find best solve (xb)</h2>
+<div id="outline-container-org5975716" class="outline-2">
+<h2 id="org5975716"><span class="section-number-2">6.</span> Find best solve (xb)</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-J">bs=:3 : '(}:xt) ,~ xo{~ (] i. &gt;./) {{eval y, }: xt}}"1 xo' NB. best solve finder
@@ -388,8 +388,8 @@ No surprise here the above prefer option A because each unit makes 10 instead of
 </p>
 </div>
 </div>
-<div id="outline-container-org60b690a" class="outline-2">
-<h2 id="org60b690a"><span class="section-number-2">7.</span> Continuous improvement</h2>
+<div id="outline-container-org3c77563" class="outline-2">
+<h2 id="org3c77563"><span class="section-number-2">7.</span> Continuous improvement</h2>
 <div class="outline-text-2" id="text-7">
 <div class="org-src-container">
 <pre class="src src-J">xt=:xt0
@@ -399,7 +399,7 @@ xp - +/"2 xt
 </pre>
 </div>
 
-<pre class="example" id="org485bfbc">
+<pre class="example" id="org635bc36">
 20 40 31 22
 
 ┌─────┐
@@ -424,7 +424,7 @@ xp - +/"2 xt
 </pre>
 </div>
 
-<pre class="example" id="org8253010">
+<pre class="example" id="orga62bf87">
 33 44 44 44
 
 ┌─────┐
@@ -442,8 +442,8 @@ xp - +/"2 xt
 </p>
 </div>
 </div>
-<div id="outline-container-org58a66fa" class="outline-2">
-<h2 id="org58a66fa"><span class="section-number-2">8.</span> Conclusion</h2>
+<div id="outline-container-org4889adb" class="outline-2">
+<h2 id="org4889adb"><span class="section-number-2">8.</span> Conclusion</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Using only array data stuctures and solving multiple times solves our problem whilst keeping things simple.<br />
@@ -453,7 +453,7 @@ Using only array data stuctures and solving multiple times solves our problem wh
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Jason Corderoy</p>
-<p class="date">Created: 2025-05-15 Thu 22:43</p>
+<p class="date">Created: 2025-05-15 Thu 22:47</p>
 </div>
 </body>
 </html>
