@@ -166,7 +166,7 @@ xp - +/"2 xt
 0 0 0
 #+end_example
 
-2nd attempt eval = 44 and whilst meeting demand exactly, no units produced exceed or under-supply demand for any category.
+2nd attempt eval = 44 meeting demand exactly, no units produced exceed or under-supply demand for any category.
 
 *** Conclusion
 
